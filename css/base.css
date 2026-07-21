@@ -159,6 +159,10 @@ section { position: relative; }
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 10px 30px -12px var(--glow);
   will-change: transform;
 }
+/* Invisible hover buffer: the lift animates the button, but the hit area includes this
+   inset pseudo — the cursor can never fall off the edge mid-transition (the hover-jitter
+   class of bug; regression-tested by verify/hover-stability.mjs). */
+.btn::after { content: ""; position: absolute; inset: -8px; border-radius: inherit; }
 .btn:hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 18px 46px -14px var(--glow); filter: brightness(1.03); }
 .btn:active { transform: translateY(0); }
 .btn .arrow { transition: transform 0.35s var(--ease); }
