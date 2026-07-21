@@ -28,9 +28,23 @@ for (const button of buttons) {
   // Manual scroll (not scrollIntoViewIfNeeded): the page has INTENTIONAL infinite animations
   // (aurora, pulse), so Playwright's element-stability wait would never resolve.
   await button.evaluate((el) => el.scrollIntoView({ block: 'center' }));
-  // Deterministic settle (NOT a fixed sleep): the footer button rides a scroll-reveal that
-  // translates it into place, so a tuned sleep races the transition and flakes. Poll the box
-  // every 100ms until two CONSECUTIVE reads are byte-identical — that's the reveal fully at rest.
+  // Deterministic settle (NOT a fixed sleep). The footer/CTA button rides a scroll-reveal that
+  // translates it into place, and two hazards make any sleep flake:
+  //   (1) the reveal may not have FIRED yet at first read, so two early boundingBox reads can be
+  //       byte-identical at the pre-reveal offset → a FALSE "settled" at a stale position;
+  //   (2) the 0.8s reveal transition then slides the button out from under a hover aimed there.
+  // Fix: first block until the reveal ancestor is genuinely .in-view (or confirm there is none),
+  // THEN poll the box until two consecutive reads are identical. Reading now only ever happens
+  // during/after the transition, so "identical twice" means truly at rest.
+  await button.evaluate((el) => new Promise((resolve) => {
+    const anc = el.closest('.reveal, .stagger, .funnel');
+    if (!anc || anc.classList.contains('in-view')) return resolve();
+    const done = () => { obs.disconnect(); clearTimeout(t); resolve(); };
+    const obs = new MutationObserver(() => { if (anc.classList.contains('in-view')) done(); });
+    obs.observe(anc, { attributes: true, attributeFilter: ['class'] });
+    if (anc.classList.contains('in-view')) done();      // re-check: no gap between check and observe
+    const t = setTimeout(done, 5000);                    // never hang
+  }));
   let box = await button.boundingBox();
   const same = (a, b) => a && b && a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
   for (let tries = 0; tries < 60; tries++) {
