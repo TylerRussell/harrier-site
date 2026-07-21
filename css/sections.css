@@ -1,0 +1,145 @@
+/* Harrier landing — sections: funnel, steps, trust, FAQ, CTA, footer.
+   Scroll-reveal utilities live here too (.reveal → .in-view). */
+
+.band { padding: clamp(60px, 8.5vh, 104px) 0; }
+.band .head { max-width: 44ch; margin-bottom: 48px; }
+.band h2 {
+  font-size: clamp(28px, 4.4vw, 46px); line-height: 1.08; letter-spacing: -0.03em;
+  font-weight: 660; margin: 18px 0 14px;
+}
+.band h2 .accent { color: var(--signal); }
+.band .lead { color: var(--muted); font-size: clamp(16px, 2vw, 19px); max-width: 52ch; }
+
+/* Scroll reveal */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.reveal.in-view { opacity: 1; transform: none; }
+.stagger > * { opacity: 0; transform: translateY(26px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+.stagger.in-view > * { opacity: 1; transform: none; }
+.stagger.in-view > *:nth-child(2) { transition-delay: 0.09s; }
+.stagger.in-view > *:nth-child(3) { transition-delay: 0.18s; }
+.stagger.in-view > *:nth-child(4) { transition-delay: 0.27s; }
+.stagger.in-view > *:nth-child(5) { transition-delay: 0.36s; }
+
+/* Glass card shared look */
+.glass {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  overflow: hidden;
+}
+.glass::before { /* 1px gradient top edge */
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+}
+
+/* ── Funnel (the signature: a night-hunt telemetry readout) ────── */
+.funnel-band { padding-top: clamp(48px, 8vh, 88px); }
+.funnel {
+  padding: clamp(24px, 4vw, 40px);
+  display: grid; gap: 16px;
+}
+.stage { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.stage .row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.stage .label { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.stage .num { font-family: var(--mono); font-weight: 650; font-size: clamp(22px, 3.6vw, 34px); letter-spacing: -0.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.stage .num .plus { color: var(--faint); font-size: 0.6em; margin-left: 1px; }
+
+.stage .track { height: 12px; border-radius: 8px; background: rgba(255,255,255,0.04); overflow: hidden; }
+.stage .fill {
+  height: 100%; border-radius: 8px; transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 1.15s var(--ease);
+  background: linear-gradient(90deg, var(--indigo), var(--signal));
+}
+.funnel.in-view .fill { transform: scaleX(1); }
+.stage:nth-child(1) .fill { width: 100%; transition-delay: 0.00s; }
+.stage:nth-child(2) .fill { width: 70%;  transition-delay: 0.12s; background: linear-gradient(90deg, var(--indigo), var(--violet)); }
+.stage:nth-child(3) .fill { width: 50%;  transition-delay: 0.24s; background: linear-gradient(90deg, var(--violet), var(--signal)); }
+.stage:nth-child(4) .fill { width: 28%;  transition-delay: 0.36s;
+  background: linear-gradient(90deg, var(--signal), var(--amber));
+  box-shadow: 0 0 22px -2px rgba(242, 178, 60, 0.55);
+}
+/* the catch — pulses warm at the funnel's narrow end */
+.stage.catch .track { position: relative; }
+.stage.catch .glowline {
+  position: absolute; inset: 0; width: 28%; border-radius: 8px;
+  background: var(--amber); opacity: 0; filter: blur(9px);
+}
+.funnel.in-view .stage.catch .glowline { animation: catchpulse 3s ease-in-out 1.4s infinite; }
+@keyframes catchpulse { 0%,100% { opacity: 0; } 50% { opacity: 0.5; } }
+.funnel .foot { font-family: var(--mono); font-size: 11.5px; color: var(--faint); margin-top: 8px; letter-spacing: 0.02em; }
+
+/* ── How it works (a real 3-step sequence) ─────────────────────── */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 820px) { .steps { grid-template-columns: 1fr; } }
+.step { padding: 28px 26px 30px; }
+.step .idx { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; color: var(--signal); }
+.step .ico { width: 40px; height: 40px; margin: 18px 0 16px; color: var(--ink); }
+.step h3 { font-size: 20px; letter-spacing: -0.01em; margin-bottom: 9px; font-weight: 620; }
+.step p { color: var(--muted); font-size: 15.5px; }
+
+/* ── Trust ────────────────────────────────────────────────────── */
+.trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 900px) { .trust { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .trust { grid-template-columns: 1fr; } }
+.tcard { padding: 24px 22px; }
+.tcard .ico { width: 26px; height: 26px; color: var(--signal); margin-bottom: 14px; }
+.tcard h4 { font-size: 16.5px; font-weight: 620; margin-bottom: 7px; letter-spacing: -0.01em; }
+.tcard p { color: var(--muted); font-size: 14.5px; }
+
+/* ── FAQ (native <details> — works with zero JS) ───────────────── */
+.faq { display: grid; gap: 12px; max-width: 780px; }
+details.q {
+  border: 1px solid var(--hairline); border-radius: 14px;
+  background: var(--panel); overflow: hidden;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+details.q[open] { border-color: rgba(255,255,255,0.18); background: var(--panel-2); }
+details.q summary {
+  list-style: none; cursor: pointer;
+  padding: 19px 22px; display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  font-size: 16.5px; font-weight: 560; letter-spacing: -0.01em; color: var(--ink);
+}
+details.q summary::-webkit-details-marker { display: none; }
+details.q summary .chev { flex: none; width: 16px; height: 16px; color: var(--muted); transition: transform 0.35s var(--ease); }
+details.q[open] summary .chev { transform: rotate(180deg); color: var(--signal); }
+details.q .a { padding: 0 22px 20px; color: var(--muted); font-size: 15px; max-width: 68ch; }
+details.q .a a { color: var(--signal); text-decoration: none; border-bottom: 1px solid rgba(34,211,238,0.35); }
+
+/* ── CTA ──────────────────────────────────────────────────────── */
+.cta-band { padding-bottom: clamp(48px, 8vh, 80px); }
+.cta-panel { padding: clamp(40px, 7vw, 72px); text-align: center; display: grid; justify-items: center; }
+.cta-panel::after { /* warm floor glow */
+  content: ""; position: absolute; left: 50%; bottom: -40%; width: 70%; height: 80%;
+  transform: translateX(-50%); pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(242,178,60,0.16), transparent 70%);
+}
+.cta-panel h2 { font-size: clamp(28px, 5vw, 50px); letter-spacing: -0.03em; line-height: 1.05; font-weight: 680; margin-bottom: 16px; max-width: 18ch; }
+.cta-panel p { color: var(--ink-soft); max-width: 46ch; margin-bottom: 30px; font-size: 17px; }
+.cta-panel .fineprint { font-family: var(--mono); font-size: 11.5px; color: var(--faint); margin-top: 20px; letter-spacing: 0.03em; }
+
+/* ── Footer ───────────────────────────────────────────────────── */
+.foot {
+  border-top: 1px solid var(--hairline);
+  padding: 40px var(--edge);
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+}
+.foot .brand { font-size: 15px; }
+.foot .meta { font-family: var(--mono); font-size: 12px; color: var(--faint); display: flex; gap: 8px 18px; flex-wrap: wrap; align-items: center; }
+.foot .meta a { color: var(--muted); text-decoration: none; }
+.foot .meta a:hover { color: var(--ink); }
+
+/* ── Responsive tightening ────────────────────────────────────── */
+@media (max-width: 560px) {
+  .stage .row { flex-direction: row; align-items: baseline; }
+  .badge { margin-bottom: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .stagger > * { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .stage .fill { transition: none !important; transform: scaleX(1) !important; }
+  .stage.catch .glowline { animation: none !important; }
+  details.q summary .chev { transition: none !important; }
+}

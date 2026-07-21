@@ -1,0 +1,5 @@
+# Local screenshot previews — never committed
+.preview/
+
+# macOS cruft
+.DS_Store

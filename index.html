@@ -1,55 +1,286 @@
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'sha256-RmXZyaucmcRviE7fqgSltzGIZsjXSi9Rs/LsRl8+73I='; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#070a0f">
+
 <title>Harrier — it applies to jobs for you while you sleep</title>
-<style>
-  :root { color-scheme: dark; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: #0a0c10;
-    color: #e6e9ef;
-    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    padding: 32px;
+<meta name="description" content="Harrier is an AI agent that runs on your own machine, finds roles that fit you, tailors a résumé for each one, and applies for you — so you spend your time on interviews, not forms. Private beta.">
+<link rel="canonical" href="https://tylerrussell.github.io/harrier-site/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Harrier — it applies to jobs for you while you sleep">
+<meta property="og:description" content="An AI agent that finds, tailors, and applies to jobs from your own machine. 3,500+ roles found · 900+ applications confirmed for its first user. Private beta.">
+<meta property="og:url" content="https://tylerrussell.github.io/harrier-site/">
+<meta property="og:image" content="og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Harrier — it applies to jobs for you while you sleep">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Harrier — it applies to jobs for you while you sleep">
+<meta name="twitter:description" content="An AI agent that finds, tailors, and applies to jobs from your own machine. Private beta.">
+<meta name="twitter:image" content="og.png">
+
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/sections.css">
+
+<div class="sky"></div>
+<div class="sweep"></div>
+<div class="grain"></div>
+
+<nav class="nav">
+  <a class="brand" href="#top" aria-label="Harrier — home">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 15 L11 9 L13 12 L22 5" stroke="url(#g)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 9 L10 14" stroke="url(#g)" stroke-width="2.2" stroke-linecap="round"/><defs><linearGradient id="g" x1="2" y1="5" x2="22" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#f2b23c"/></linearGradient></defs></svg>
+    Harrier
+  </a>
+  <div class="nav-links">
+    <a class="hide-sm" href="#how">How it works</a>
+    <a class="hide-sm" href="#trust">Trust</a>
+    <a class="hide-sm" href="#faq">FAQ</a>
+    <a class="btn ghost sm" href="mailto:tyler.russell248@gmail.com?subject=Harrier%20beta%20request">Request access</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="badge rise d1"><span class="dot"></span> Private beta</span>
+    <h1 class="headline">
+      <span class="w">Harrier</span> <span class="w">applies</span> <span class="w">to</span> <span class="w">jobs</span> <span class="w">for</span> <span class="w">you</span> <span class="w accent">while</span> <span class="w accent">you</span> <span class="w accent">sleep.</span>
+    </h1>
+    <p class="sub rise d3">An AI agent that lives on your own machine. It reads what you're looking for, hunts the job boards, writes a fresh résumé for every role, and sends the application — so you wake up to interviews, not a to-do list.</p>
+    <p class="statline rise d4">
+      <span><b>3,500+</b> roles found</span><span class="sep">·</span>
+      <span><b>1,300+</b> applications sent</span><span class="sep">·</span>
+      <span><b>900+</b> confirmed</span><span class="sep">·</span>
+      <span><b>25+</b> interviews</span>
+    </p>
+    <div class="hero-cta rise d5">
+      <a class="btn magnetic" href="mailto:tyler.russell248@gmail.com?subject=Harrier%20beta%20request">Request beta access <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="btn ghost" href="#how">See how it works</a>
+    </div>
+    <p class="fineprint rise d6">All-time figures for Harrier's first user. Exact counts, rounded down.</p>
+  </div>
+</header>
+
+<!-- The signature: a night-hunt telemetry readout. Widths are illustrative; numbers are exact, rounded down. -->
+<section class="band funnel-band" aria-label="Results funnel">
+  <div class="wrap">
+    <div class="glass funnel reveal">
+      <div class="stage">
+        <div class="row"><span class="label">Roles found</span><span class="num"><span class="val" data-target="3500">0</span><span class="plus">+</span></span></div>
+        <div class="track"><div class="fill"></div></div>
+      </div>
+      <div class="stage">
+        <div class="row"><span class="label">Applications sent</span><span class="num"><span class="val" data-target="1300">0</span><span class="plus">+</span></span></div>
+        <div class="track"><div class="fill"></div></div>
+      </div>
+      <div class="stage">
+        <div class="row"><span class="label">Confirmed by employers</span><span class="num"><span class="val" data-target="900">0</span><span class="plus">+</span></span></div>
+        <div class="track"><div class="fill"></div></div>
+      </div>
+      <div class="stage catch">
+        <div class="row"><span class="label">Interviews</span><span class="num"><span class="val" data-target="25">0</span><span class="plus">+</span></span></div>
+        <div class="track"><div class="glowline"></div><div class="fill"></div></div>
+      </div>
+      <p class="foot">One person. One laptop. While they slept.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="how">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">How it works</span>
+      <h2>Three steps. Then you <span class="accent">go to interviews.</span></h2>
+      <p class="lead">No dashboards to babysit, no forms to fill. You set it up once and it works the boards on its own.</p>
+    </div>
+    <div class="steps stagger reveal">
+      <article class="glass step">
+        <div class="idx">01</div>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 20c0-3.3 3.6-5.5 8-5.5s8 2.2 8 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <h3>Tell it who you are</h3>
+        <p>Your titles, your stack, what you'd say yes to. A few minutes, once — it becomes the brief for everything that follows.</p>
+      </article>
+      <article class="glass step">
+        <div class="idx">02</div>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11.5 21 4l-7.5 17-2.5-7.5L3 11.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <h3>It finds and applies</h3>
+        <p>It hunts the boards for roles that fit, writes a résumé tailored to each one, fills the form, and submits — all from your machine, around the clock.</p>
+      </article>
+      <article class="glass step">
+        <div class="idx">03</div>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3M8.5 14l2.4 2.4 4.6-4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>You take the calls</h3>
+        <p>Replies land in your inbox. Harrier keeps applying in the background while you prep for the interviews that matter.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="trust">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Built to be trusted</span>
+      <h2>It works <span class="accent">for you</span> — not on a server somewhere.</h2>
+      <p class="lead">Harrier is deliberately boring about the things that matter: where it runs, what it touches, and how fast it moves.</p>
+    </div>
+    <div class="trust stagger reveal">
+      <article class="glass tcard">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 5 6v6c0 4.2 3 7.5 7 9 4-1.5 7-4.8 7-9V6l-7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <h4>Runs on your Mac</h4>
+        <p>It's software you run, not a service you upload to. Your laptop does the work.</p>
+      </article>
+      <article class="glass tcard">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <h4>Your data stays put</h4>
+        <p>Your résumé, history, and answers live on your disk. Nothing gets shipped off to us.</p>
+      </article>
+      <article class="glass tcard">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21a9 9 0 1 0-9-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 12l4-2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M3 12H1m2.6-4.4L2.2 6.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <h4>Paces itself</h4>
+        <p>Per-company limits mean it never floods one employer. It applies like a careful human, not a bot.</p>
+      </article>
+      <article class="glass tcard">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5v4.5l3 1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h4>Spend caps you set</h4>
+        <p>Daily and total limits you control. It stops the moment it hits the ceiling you chose.</p>
+      </article>
+      <article class="glass tcard">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6"/></svg>
+        <h4>Review before it sends</h4>
+        <p>Prefer a look first? Human-assist mode fills every form and waits for your click to submit.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="faq">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">FAQ</span>
+      <h2>The honest answers.</h2>
+    </div>
+    <div class="faq reveal">
+      <details class="q">
+        <summary>What does it cost? <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="a">In the beta it's free. You bring your own Anthropic API key, and the AI cost works out to roughly pennies per application — you pay Anthropic directly for exactly what you use, nothing to us.</div>
+      </details>
+      <details class="q">
+        <summary>What do I need to run it? <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="a">A Mac, Google Chrome, and an Anthropic API key. That's the whole list. Harrier runs locally and drives Chrome to do the applying.</div>
+      </details>
+      <details class="q">
+        <summary>Is it safe to let it apply for me? <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="a">It's built to be careful. Per-company pacing keeps it from ever spamming one employer, spend caps stop it from running away with cost, and you can switch on review-before-send whenever you want a human in the loop.</div>
+      </details>
+      <details class="q">
+        <summary>Can I review applications before they go out? <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="a">Yes. Human-assist mode fills in the entire application and then pauses on the submit step, so you get the final say on every one before it's sent.</div>
+      </details>
+      <details class="q">
+        <summary>How do I get access? <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <div class="a">Harrier is in private beta right now. <a href="mailto:tyler.russell248@gmail.com?subject=Harrier%20beta%20request">Email for an invite</a> and you'll hear back when a spot opens.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="band cta-band">
+  <div class="wrap">
+    <div class="glass cta-panel reveal">
+      <span class="eyebrow">Get in</span>
+      <h2>Harrier is in private beta.</h2>
+      <p>Want it applying for you while you sleep? Ask for an invite — spots open in small batches.</p>
+      <a class="btn magnetic" href="mailto:tyler.russell248@gmail.com?subject=Harrier%20beta%20request">Request beta access <span class="arrow" aria-hidden="true">→</span></a>
+      <!-- MONETIZE: uncomment when the flag flips (private beta → paid). Swap href for the live Stripe Payment Link and remove the beta CTA above. -->
+      <!-- <a class="btn magnetic" href="#" data-payment-link>Buy Harrier <span class="arrow" aria-hidden="true">→</span></a> -->
+      <p class="fineprint">Runs on your own machine · your data stays yours</p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <a class="brand" href="#top" aria-label="Harrier — home">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 15 L11 9 L13 12 L22 5" stroke="url(#gf)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 9 L10 14" stroke="url(#gf)" stroke-width="2.2" stroke-linecap="round"/><defs><linearGradient id="gf" x1="2" y1="5" x2="22" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#f2b23c"/></linearGradient></defs></svg>
+    Harrier
+  </a>
+  <div class="meta">
+    <a href="mailto:tyler.russell248@gmail.com?subject=Harrier%20beta%20request">tyler.russell248@gmail.com</a>
+    <span>© 2026</span>
+    <span>Runs on your own machine — your data stays yours.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // Clickjacking guard: refuse to run inside a frame.
+  if (self !== top) { top.location = self.location; return; }
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function format(value) { return value.toLocaleString("en-US"); }
+
+  function countUp(node) {
+    var target = parseInt(node.getAttribute("data-target"), 10) || 0;
+    if (reduce) { node.textContent = format(target); return; }
+    var started = performance.now();
+    var duration = 1500;
+    function tick(now) {
+      var progress = Math.min(1, (now - started) / duration);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      node.textContent = format(Math.round(target * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
   }
-  main { max-width: 640px; text-align: center; }
-  h1 {
-    font-size: clamp(28px, 6vw, 48px);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 20px;
-    background: linear-gradient(180deg, #fff, #9aa4b2);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+
+  // Light the page: kicks off the hero entrance + ambient atmosphere.
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () { document.body.classList.add("lit"); });
+  });
+
+  // Condense the nav once the page has moved.
+  var nav = document.querySelector(".nav");
+  function onScroll() { if (nav) { nav.classList.toggle("scrolled", window.scrollY > 8); } }
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // Scroll-triggered reveals + counters.
+  var revealables = document.querySelectorAll(".reveal, .stagger, .funnel");
+  function activate(element) {
+    element.classList.add("in-view");
+    var counters = element.querySelectorAll ? element.querySelectorAll("[data-target]") : [];
+    for (var i = 0; i < counters.length; i++) { countUp(counters[i]); }
   }
-  p { color: #aeb6c2; margin-bottom: 20px; }
-  .beta {
-    display: inline-block;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #7dd3fc;
-    border: 1px solid rgba(125, 211, 252, 0.3);
-    border-radius: 999px;
-    padding: 5px 14px;
-    margin-bottom: 28px;
+  if (!("IntersectionObserver" in window) || reduce) {
+    revealables.forEach(activate);
+  } else {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) { return; }
+        activate(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.2, rootMargin: "0px 0px -8% 0px" });
+    revealables.forEach(function (element) { observer.observe(element); });
   }
-  a.cta {
-    display: inline-block;
-    background: #f4f6fa;
-    color: #0a0c10;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 13px 26px;
-    border-radius: 10px;
+
+  // Subtle magnetic pull on primary buttons (pointer devices only).
+  if (!reduce && window.matchMedia && window.matchMedia("(hover: hover)").matches) {
+    document.querySelectorAll(".btn.magnetic").forEach(function (button) {
+      button.addEventListener("pointermove", function (event) {
+        var rect = button.getBoundingClientRect();
+        var offsetX = event.clientX - rect.left - rect.width / 2;
+        var offsetY = event.clientY - rect.top - rect.height / 2;
+        button.style.transform = "translate(" + (offsetX * 0.16).toFixed(1) + "px," + (offsetY * 0.22 - 2).toFixed(1) + "px)";
+      });
+      button.addEventListener("pointerleave", function () { button.style.transform = ""; });
+    });
   }
-</style>
-<main>
-  <div class="beta">Private beta</div>
-  <h1>Harrier applies to jobs for you while you sleep.</h1>
-  <p>Harrier is an AI agent that runs on your own machine, finds roles that fit you, tailors a résumé for each one, and submits the application for you — so you spend your time on interviews, not forms.</p>
-  <p>It is currently in private beta. Want in?</p>
-  <a class="cta" href="mailto:tyler.russell248@gmail.com?subject=Harrier%20beta%20request">Request beta access</a>
-</main>
+})();
+</script>
