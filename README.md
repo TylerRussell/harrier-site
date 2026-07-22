@@ -70,6 +70,26 @@ there (CSP, `X-Frame-Options: DENY`, `Referrer-Policy`, `Strict-Transport-Securi
 If you edit the inline script, its hash changes — recompute it and update the `script-src` hash in
 the CSP `<meta>`, or the script will be blocked.
 
+## Anti-scraper / anti-indexing
+
+A public URL is fetchable by anyone; these measures only stop *well-behaved* crawlers (search
+engines + compliant AI bots) from indexing or training on the site — reducing where it shows up.
+Three tiers:
+
+1. **Per-page `<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noai,
+   noimageai">`** on every page — **this is what works today**, because on the `…/harrier-site/`
+   project path a crawler reads the *root* `robots.txt` (which this repo doesn't control), not ours.
+2. **`robots.txt`** (Disallow all + a named blocklist of AI crawlers: GPTBot, Google-Extended,
+   ClaudeBot, PerplexityBot, CCBot, Bytespider, etc.). Becomes **fully effective once the site is
+   served at a custom-domain root** (e.g. `harrier.io/robots.txt`).
+3. **Cloudflare in front of the custom domain** (same upgrade as the header gap above) — its "Block
+   AI Scrapers/Crawlers" + bot-fight can actually *challenge/block* non-compliant bots, which
+   robots.txt (advisory only) cannot.
+
+**Launch toggle:** the whole site is `noindex` for private beta. At public launch, remove `noindex`
+from `index.html` if you want the marketing page found via search — but keep it on `terms.html` /
+`privacy.html` if you'd rather your operator name not be indexed.
+
 ## Regenerating the OG image / favicon
 
 Both are static PNGs. They were rendered headlessly from small standalone HTML files (dark aurora
