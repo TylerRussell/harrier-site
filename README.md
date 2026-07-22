@@ -3,7 +3,7 @@
 The public landing page for **Harrier**, an AI agent that finds jobs, tailors a résumé
 for each one, and applies for you — all from your own machine. Currently in **private beta**.
 
-Live: <https://tylerrussell.github.io/harrier-site/>
+Live: <https://getharrier.com/>
 
 This is a hand-written static site. No framework, no build step, no bundler, no external
 requests. Editing copy is editing HTML; **`git push` to `main` is the deploy** (GitHub Pages
@@ -62,9 +62,10 @@ This is static content, but it's hardened as far as a Pages-hosted page allows:
 
 **Known limitation:** GitHub Pages cannot set real HTTP response headers, so the CSP and
 Referrer-Policy are delivered via `<meta>` (which covers most, but not header-only directives
-like `frame-ancestors` or HSTS — HTTPS itself is enforced by Pages). **Upgrade path:** when the
-site moves to a custom domain, put **Cloudflare** in front of it and set the real response headers
-there (CSP, `X-Frame-Options: DENY`, `Referrer-Policy`, `Strict-Transport-Security`,
+like `frame-ancestors` or HSTS — HTTPS itself is enforced by Pages). **Upgrade path:** the site
+now runs on its custom domain (`getharrier.com`); the remaining step is putting **Cloudflare** in
+front of it (proxied / orange-cloud) and setting the real response headers there (CSP,
+`X-Frame-Options: DENY`, `Referrer-Policy`, `Strict-Transport-Security`,
 `X-Content-Type-Options: nosniff`). That closes the header-only gap without touching the markup.
 
 If you edit the inline script, its hash changes — recompute it and update the `script-src` hash in
@@ -77,11 +78,11 @@ engines + compliant AI bots) from indexing or training on the site — reducing 
 Three tiers:
 
 1. **Per-page `<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noai,
-   noimageai">`** on every page — **this is what works today**, because on the `…/harrier-site/`
-   project path a crawler reads the *root* `robots.txt` (which this repo doesn't control), not ours.
+   noimageai">`** on every page — a per-page layer that works regardless of host, kept as defense
+   in depth alongside the now-authoritative root `robots.txt`.
 2. **`robots.txt`** (Disallow all + a named blocklist of AI crawlers: GPTBot, Google-Extended,
-   ClaudeBot, PerplexityBot, CCBot, Bytespider, etc.). Becomes **fully effective once the site is
-   served at a custom-domain root** (e.g. `harrier.io/robots.txt`).
+   ClaudeBot, PerplexityBot, CCBot, Bytespider, etc.). **Now effective** — the site is served at
+   its custom-domain root, so this is fetched as `getharrier.com/robots.txt`.
 3. **Cloudflare in front of the custom domain** (same upgrade as the header gap above) — its "Block
    AI Scrapers/Crawlers" + bot-fight can actually *challenge/block* non-compliant bots, which
    robots.txt (advisory only) cannot.
