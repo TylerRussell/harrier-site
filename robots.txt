@@ -1,11 +1,10 @@
 # Harrier — discourage all crawling, indexing, and AI training.
 #
-# NOTE ON EFFECTIVENESS: robots.txt is honored at a domain's ROOT. On the GitHub
-# Pages project path (tylerrussell.github.io/harrier-site/), compliant crawlers read
-# the ROOT robots.txt (tylerrussell.github.io/robots.txt), NOT this file — so today
-# the per-page <meta name="robots" content="noindex, nofollow, noai, noimageai"> tags
-# are what actually block indexing. This file becomes fully effective once the site is
-# served at the root of a custom domain (e.g. harrier.io/robots.txt).
+# NOTE ON EFFECTIVENESS: robots.txt is honored at a domain's ROOT. The site is now
+# served at the root of its custom domain (getharrier.com), so this file is fetched as
+# getharrier.com/robots.txt and IS authoritative for compliant crawlers. The per-page
+# <meta name="robots" content="noindex, nofollow, noai, noimageai"> tags remain as a
+# second, independent layer of defense.
 #
 # None of this stops a determined scraper fetching a public URL — it stops well-behaved
 # crawlers (search engines + compliant AI bots) from indexing or training on the site.
