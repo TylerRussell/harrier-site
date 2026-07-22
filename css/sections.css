@@ -45,7 +45,8 @@
 .stage .row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
 .stage .label { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2); }
 .stage .num { font-family: var(--mono); font-weight: 650; font-size: clamp(22px, 3.6vw, 34px); letter-spacing: -0.02em; color: var(--fg); font-variant-numeric: tabular-nums; }
-.stage .num .plus { color: var(--fg-4); font-size: 0.6em; margin-left: 1px; }
+.stage .num .plus, .stage .num .unit { color: var(--fg-4); font-size: 0.6em; margin-left: 2px; letter-spacing: 0.01em; }
+.stage .num .approx { color: var(--fg-4); font-size: 0.62em; margin-right: 1px; }
 /* one-line definition beneath each stage label — turns a bare figure into a funnel step */
 .stage .def { color: var(--fg-3); font-size: 13.5px; line-height: 1.55; max-width: 56ch; }
 
