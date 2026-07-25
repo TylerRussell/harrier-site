@@ -146,3 +146,16 @@ details.q .a a { color: var(--accent); text-decoration: none; border-bottom: 1px
   .stage.catch .glowline { animation: none !important; }
   details.q summary .chev { transition: none !important; }
 }
+
+/* The selectivity caveat under the funnel lead. Quieter than the lead it follows — it's an honest
+   qualifier, not a second pitch — but not hidden: it's the reason the numbers read low, and saying so
+   turns a distortion into a floor. */
+.head .lead.caveat {
+  font-size: 13.5px;
+  color: var(--fg-4);
+  margin-top: 10px;
+  padding-left: 11px;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  max-width: 62ch;
+}
+.head .lead.caveat b { color: var(--fg-3); font-weight: 650; }
