@@ -21,11 +21,18 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 // This repo is a static site with no node_modules of its own, and ESM resolves bare specifiers from the
 // SCRIPT's location (not cwd), so `import 'playwright'` can't be satisfied here and NODE_PATH doesn't
-// apply to ESM. Borrow the app repo's copy by absolute path; PLAYWRIGHT_DIR overrides if it moves.
-const playwrightDir =
-  process.env.PLAYWRIGHT_DIR || '/Users/tyler/dev/job-applier-agent/node_modules/playwright/index.mjs';
-if (!fs.existsSync(playwrightDir)) {
-  console.error(`generate-social-images: Playwright not found at ${playwrightDir}. Set PLAYWRIGHT_DIR.`);
+// apply to ESM. Borrow a Playwright install from any checkout that has one, via PLAYWRIGHT_DIR:
+//
+//   PLAYWRIGHT_DIR=/path/to/some-repo/node_modules/playwright/index.mjs node tools/generate-social-images.mjs
+//
+// Required, with no baked-in default on purpose: a default would hardcode one machine's directory layout
+// into a public repository, which both leaks that layout and silently breaks for everyone else.
+const playwrightDir = process.env.PLAYWRIGHT_DIR;
+if (!playwrightDir || !fs.existsSync(playwrightDir)) {
+  console.error(
+    'generate-social-images: set PLAYWRIGHT_DIR to a playwright/index.mjs path ' +
+      '(e.g. PLAYWRIGHT_DIR=/path/to/repo/node_modules/playwright/index.mjs).',
+  );
   process.exit(1);
 }
 const { chromium } = await import(pathToFileURL(playwrightDir).href);
