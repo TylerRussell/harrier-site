@@ -45,6 +45,11 @@ jobs:
 
       # A stale pin makes the browser refuse to run the inline script. The page still renders, so it
       # presents as "the buttons do nothing" rather than as anything security-shaped.
+      # The checks' own unit tests — the warn/fail boundary, which is the part that decides whether this
+      # workflow ever mails you again. No browser needed.
+      - name: Check logic
+        run: node --test verify/checks.test.mjs
+
       - name: CSP hashes are current
         run: |
           set -euo pipefail

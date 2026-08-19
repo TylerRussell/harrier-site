@@ -50,7 +50,11 @@ function serve() {
 }
 
 const results = [];
-const record = (label, failures) => results.push({ label, failures });
+// Warnings are reported on every run and never fail the build. The distinction is deliberate: a failure
+// must be something a commit can fix. Anything else — an account setting on a CDN we do not control —
+// belongs in the output where it is read, not in the exit code where it reds the build forever and
+// teaches everyone to ignore the mail.
+const record = (label, failures, warnings = []) => results.push({ label, failures, warnings });
 
 const browser = await chromium.launch();
 const local = live ? null : await serve();
@@ -63,15 +67,18 @@ for (const route of PAGES) {
     const page = await context.newPage();
     const errors = [];
     const requests = [];
+    const completed = []; // responses that actually arrived — the difference between "asked" and "got"
     page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
     page.on('pageerror', (e) => errors.push(String(e)));
     page.on('request', (r) => requests.push(r.url()));
+    page.on('response', (r) => completed.push(r.url()));
     await page.goto(base + route, { waitUntil: 'networkidle' });
 
     const where = `${route} @${width}`;
     record(`${where} contact links`, await checks.contactLinksWork(page));
     record(`${where} mailto usable`, await checks.mailtoLinksResolve(page));
-    record(`${where} no edge injection`, await checks.noEdgeInjection(page));
+    const edge = await checks.edgeInjection(page, completed);
+    record(`${where} no edge injection`, edge.failures, edge.warnings);
     record(`${where} no off-origin requests`, checks.offOriginRequests(requests, base));
     record(`${where} no page errors`, checks.pageErrors(errors));
     record(`${where} no horizontal scroll`, await checks.noHorizontalScroll(page));
@@ -87,19 +94,33 @@ await browser.close();
 local?.server.close();
 
 let failed = 0;
-for (const { label, failures } of results) {
-  if (failures.length === 0) {
+let warned = 0;
+for (const { label, failures, warnings } of results) {
+  if (failures.length === 0 && warnings.length === 0) {
     console.log(`  ok    ${label}`);
     continue;
   }
-  failed += failures.length;
-  console.log(`  FAIL  ${label}`);
-  failures.forEach((f) => console.log(`      ${f}`));
+  if (failures.length) {
+    failed += failures.length;
+    console.log(`  FAIL  ${label}`);
+    failures.forEach((f) => console.log(`      ${f}`));
+  }
+  if (warnings.length) {
+    warned += warnings.length;
+    console.log(`  warn  ${label}`);
+    warnings.forEach((w) => {
+      console.log(`      ${w}`);
+      // A GitHub annotation, so it surfaces on the run summary rather than only in the log body.
+      if (process.env.GITHUB_ACTIONS) console.log(`::warning::${w.split('\n')[0]}`);
+    });
+  }
 }
 
+const passed = results.filter((r) => !r.failures.length).length;
 console.log(
-  `\n${results.length - results.filter((r) => r.failures.length).length}/${results.length} checks passed` +
-    (failed ? `, ${failed} failure(s)` : ''),
+  `\n${passed}/${results.length} checks passed` +
+    (failed ? `, ${failed} failure(s)` : '') +
+    (warned ? `, ${warned} warning(s) — see above; warnings never fail the build` : ''),
 );
 if (!live) {
   console.log(
