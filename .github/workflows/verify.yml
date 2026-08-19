@@ -50,15 +50,10 @@ jobs:
           set -euo pipefail
           for file in index.html report.html; do node tools/csp-hash.mjs "$file" --check; done
 
-      # The public-site PII gate. The operator name in the Terms and Privacy Policy is the named
-      # contracting party and is deliberately excluded; everything else on this list is a leak.
+      # The public-site PII gate. The pattern list lives in the script, not here — an inline grep matched
+      # its own pattern definition and failed the job on the file that describes the check.
       - name: No PII or private-repo references
-        run: |
-          set -euo pipefail
-          hits=$(grep -rInE '315.?727.?8764|Diamond Lake|55419|sk_(test|live)_|whsec_|BEGIN.*PRIVATE KEY|Minneapolis|Sonali|/Users/|job-applier-agent|pipeline\.db' . \
-            --exclude-dir=.git --exclude-dir=.preview --exclude-dir=node_modules || true)
-          if [ -n "$hits" ]; then echo "::error::PII / private-repo reference found"; echo "$hits"; exit 1; fi
-          echo "clean"
+        run: sh tools/pii-gate.sh
 
   # ── The local gate: what we publish, before it goes anywhere. ─────────────────────────────────────────
   local:
