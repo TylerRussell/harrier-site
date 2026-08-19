@@ -1,0 +1,294 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'sha256-ZVsXfzAHVMBQrrK8jYgG3hliNa1oDPU3wjtazxNLBy8='; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noai, noimageai">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<title>Report a problem — Harrier</title>
+<meta name="description" content="Report a Harrier problem when the app itself will not start.">
+<link rel="canonical" href="https://getharrier.com/report.html">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/legal.css">
+<link rel="stylesheet" href="css/report.css">
+
+<nav class="nav">
+  <a class="brand" href="index.html" aria-label="Harrier — home">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="url(#g)" fill-rule="evenodd" clip-rule="evenodd" d="M20 3.4C17.6 4.1 14.9 6.2 12.96 7.74C10 9.7 7.9 13 6.89 17.16C8 17.8 9.2 18 10.2 17.85C10.6 17.4 10.85 17 10.9 16.55C11.4 17 11.9 17.3 12.45 17.25C12.7 16.85 12.85 16.5 12.9 16.05C16.5 12.6 18.9 8.3 20 3.4ZM18.62 4.85C14.6 8.2 11.02 11.97 7.6 16.4C11.7 12.9 15.46 9.02 18.62 4.85Z"/><path fill="url(#g)" d="M8.6 16.5 3.86 21.05C3.3 21.42 2.85 20.9 3.14 20.36L7.6 15.5Z"/><defs><linearGradient id="g" x1="19" y1="4" x2="5" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd9b8"/><stop offset="1" stop-color="#ff8c42"/></linearGradient></defs></svg>
+    Harrier
+  </a>
+  <div class="nav-links">
+    <a class="hide-sm" href="index.html">Home</a>
+    <a class="btn ghost sm" href="mailto:tyler.russell248@gmail.com?subject=Harrier%20beta%20request">Request access</a>
+  </div>
+</nav>
+
+<main class="legal">
+  <a class="back" href="index.html">← Harrier</a>
+  <h1>Report a problem</h1>
+  <p class="updated">For when Harrier is too broken to report it itself</p>
+
+  <div class="tldr">If Harrier still starts, report it from inside the app instead — the <strong>gear icon</strong> in the dashboard header, then <strong>Report a problem</strong>. That version attaches your version, preflight results and recent logs automatically, so it is far more useful than anything you can type here. This page is the fallback for when the app will not start at all.</div>
+
+  <h2>Tell us what happened</h2>
+  <p>Nothing is sent from this page. It writes the report for you; you send it from your own email. Fill in whatever you know — every field except the first is optional.</p>
+
+  <form class="report-form" id="report-form" novalidate>
+    <div class="field">
+      <label for="what">What went wrong?</label>
+      <p class="hint">What you were doing, and what happened instead. If there is an error message, paste it in — it is usually the single most useful thing in a report.</p>
+      <textarea id="what" name="what" placeholder="I ran `harrier start` and it exited straight away with…" required></textarea>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="contact">Where should we reply?</label>
+        <p class="hint">Leave blank if you would rather not hear back.</p>
+        <input id="contact" name="contact" type="email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label for="version">Harrier version</label>
+        <p class="hint">From <code>harrier --help</code> or your purchase email. "Don't know" is fine.</p>
+        <input id="version" name="version" type="text" placeholder="1.0.0">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="install">How did you install it?</label>
+        <select id="install" name="install">
+          <option value="unknown">I'm not sure</option>
+          <option value="packaged">npm install -g harrier-ai</option>
+          <option value="source">Cloned the repository</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="platform">Your computer</label>
+        <p class="hint">Filled in from your browser. Correct it if you are writing this from a different machine.</p>
+        <input id="platform" name="platform" type="text">
+      </div>
+    </div>
+
+    <div class="report-note" id="privacy-note">
+      <strong>This page collects nothing.</strong> There is no server behind it and no analytics on it. What you type stays in this browser tab until you press one of the buttons below, and both of those hand the text to <em>you</em> — one opens your email app with it, the other copies it to your clipboard. Please do not paste API keys or passwords: unlike the in-app reporter, this page cannot scrub them for you.
+    </div>
+
+    <h2>The report</h2>
+    <p class="hint">This is exactly what will be sent — read it before you send it.</p>
+    <pre class="report-preview" id="preview" aria-live="polite" aria-label="The report that will be sent"></pre>
+
+    <div class="report-actions">
+      <a class="btn" id="send" href="#">Open this in my email app</a>
+      <button class="btn ghost" id="copy" type="button">Copy the report</button>
+    </div>
+    <p class="report-status" id="status" role="status"></p>
+  </form>
+
+  <h2>If neither button works</h2>
+  <p>Copy the block above by hand and email it to <a href="mailto:tyler.russell248@gmail.com">tyler.russell248@gmail.com</a>. Keep the subject line starting with <code>[harrier-report]</code> — that is what routes it straight into the fix queue instead of an inbox.</p>
+
+  <h2>If the dashboard will not start but the terminal works</h2>
+  <p>Run <code>harrier support</code>. It writes a full diagnostic report — version, preflight results, recent logs — to <code>output/support/</code>, with credentials and personal details already removed, and prints exactly where to email it. <code>harrier support --open</code> drafts the email for you.</p>
+</main>
+
+<footer class="foot">
+  <a class="brand" href="index.html" aria-label="Harrier — home">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="url(#gf)" fill-rule="evenodd" clip-rule="evenodd" d="M20 3.4C17.6 4.1 14.9 6.2 12.96 7.74C10 9.7 7.9 13 6.89 17.16C8 17.8 9.2 18 10.2 17.85C10.6 17.4 10.85 17 10.9 16.55C11.4 17 11.9 17.3 12.45 17.25C12.7 16.85 12.85 16.5 12.9 16.05C16.5 12.6 18.9 8.3 20 3.4ZM18.62 4.85C14.6 8.2 11.02 11.97 7.6 16.4C11.7 12.9 15.46 9.02 18.62 4.85Z"/><path fill="url(#gf)" d="M8.6 16.5 3.86 21.05C3.3 21.42 2.85 20.9 3.14 20.36L7.6 15.5Z"/><defs><linearGradient id="gf" x1="19" y1="4" x2="5" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd9b8"/><stop offset="1" stop-color="#ff8c42"/></linearGradient></defs></svg>
+    Harrier
+  </a>
+  <div class="meta">
+    <div class="legal-links"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="report.html">Report a problem</a></div>
+    <a href="mailto:tyler.russell248@gmail.com?subject=Harrier%20invite%20request">tyler.russell248@gmail.com</a>
+    <span>© 2026</span>
+    <span>Runs on your own machine — your applications go straight to the employer.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // Clickjacking guard: refuse to run inside a frame. Same as index.html — a meta CSP cannot set
+  // frame-ancestors, so this is the only frame protection a Pages site has.
+  if (self !== top) { top.location = self.location; return; }
+
+  // THE WIRE FORMAT IS NOT DECORATIVE. A report emailed from this page is parsed by the same intake that
+  // reads reports from inside the app (src/support/submit.ts decodeBundle in the Harrier repo): the
+  // sentinels below delimit a base64 JSON bundle, and the subject tag is what routes the mail. Change
+  // either and a report filed here stops becoming an issue and lands in a human inbox instead.
+  var BEGIN = "===HARRIER-REPORT-V1-BEGIN===";
+  var END = "===HARRIER-REPORT-V1-END===";
+  var SUPPORT = "tyler.russell248@gmail.com";
+
+  var form = document.getElementById("report-form");
+  var what = document.getElementById("what");
+  var contact = document.getElementById("contact");
+  var version = document.getElementById("version");
+  var install = document.getElementById("install");
+  var platform = document.getElementById("platform");
+  var preview = document.getElementById("preview");
+  var send = document.getElementById("send");
+  var copy = document.getElementById("copy");
+  var status = document.getElementById("status");
+
+  // A stable id, generated the same way the app generates one. The suffix is LETTERS ONLY and the date is
+  // hyphenated on purpose: the intake scrubs personal data out of every report, and its phone-number
+  // backstop matches any run of ten digits — a compact `20260819T030002` id was being rewritten to
+  // `[redacted:phone]` inside the very bundle it identifies.
+  function reportId(now) {
+    var iso = now.toISOString();
+    var letters = "abcdefghijkmnpqrstuvwxyz";
+    var suffix = "";
+    var random = new Uint32Array(4);
+    (window.crypto || window.msCrypto).getRandomValues(random);
+    for (var i = 0; i < 4; i++) suffix += letters.charAt(random[i] % letters.length);
+    return "HR-" + iso.slice(0, 10) + "-" + iso.slice(11, 19).replace(/:/g, "") + "-" + suffix;
+  }
+
+  // btoa() only accepts Latin-1, so a report containing any non-ASCII character (an em dash pasted from a
+  // stack trace, a name with an accent) throws InvalidCharacterError and the page dies with an empty
+  // preview. Encode to UTF-8 bytes first, in chunks small enough not to blow the argument limit.
+  function toBase64(text) {
+    var bytes = new TextEncoder().encode(text);
+    var binary = "";
+    for (var i = 0; i < bytes.length; i += 0x8000) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(binary);
+  }
+
+  function wrap(base64) {
+    return (base64.match(/.{1,76}/g) || []).join("\n");
+  }
+
+  // What the browser can honestly say about the machine. Deliberately coarse: this is a support hint, not
+  // a fingerprint, and the field is editable because the reader may well be on a different computer than
+  // the broken one.
+  function guessPlatform() {
+    var ua = navigator.userAgent || "";
+    if (/Mac OS X|Macintosh/.test(ua)) return "macOS";
+    if (/Windows NT/.test(ua)) return "Windows";
+    if (/Android/.test(ua)) return "Android";
+    if (/Linux/.test(ua)) return "Linux";
+    if (/iPhone|iPad/.test(ua)) return "iOS";
+    return "";
+  }
+
+  var currentId = reportId(new Date());
+  var currentDate = new Date().toISOString();
+
+  function bundle() {
+    // The SAME shape src/support/bundle.ts produces, with "unknown" wherever a browser genuinely cannot
+    // know. Empty arrays rather than omitted keys: the intake renders sections from them, and a missing
+    // key is a different failure than an empty one.
+    return {
+      report_id: currentId,
+      created_at: currentDate,
+      source: "getharrier.com/report.html",
+      harrier: { version: version.value.trim() || "unknown", commit: null, install: install.value },
+      runtime: {
+        node: "unknown",
+        npm: null,
+        platform: platform.value.trim() || "unknown",
+        arch: "unknown",
+        release: "unknown",
+        memory_gb: 0
+      },
+      doctor: [],
+      flags: {},
+      errors: [],
+      logs: [],
+      user: { message: what.value.trim(), contact: contact.value.trim() || null }
+    };
+  }
+
+  function subject() {
+    var headline = what.value.trim().split("\n")[0].slice(0, 60).trim();
+    return "[harrier-report] " + currentId + (headline ? " — " + headline : "");
+  }
+
+  function document_() {
+    var data = bundle();
+    var lines = [
+      "Harrier bug report " + data.report_id,
+      "Filed " + data.created_at + " from getharrier.com/report.html",
+      "",
+      "WHAT HAPPENED",
+      data.user.message || "(nothing written yet)",
+      "",
+      "INSTALL",
+      "- harrier: " + data.harrier.version + " (" + data.harrier.install + ")",
+      "- computer: " + data.runtime.platform,
+      "- reply to: " + (data.user.contact || "(none)"),
+      "",
+      "This report was written on the website because Harrier itself would not start, so it carries no",
+      "preflight results and no logs. Everything below is the same information in machine-readable form.",
+      "",
+      BEGIN,
+      wrap(toBase64(JSON.stringify(data))),
+      END,
+      ""
+    ];
+    return lines.join("\n");
+  }
+
+  function render() {
+    var text = document_();
+    preview.textContent = text;
+    var ready = what.value.trim().length > 0;
+    // A mailto has a practical length ceiling of a couple of thousand characters, past which browsers and
+    // mail clients silently truncate or refuse to open. The copy button has no such limit, so once the
+    // report outgrows the URL the page says so rather than handing over a mail draft missing its payload.
+    var href = "mailto:" + encodeURIComponent(SUPPORT) +
+      "?subject=" + encodeURIComponent(subject()) +
+      "&body=" + encodeURIComponent(text);
+    var tooLong = href.length > 1900;
+    send.setAttribute("href", ready && !tooLong ? href : "#");
+    send.setAttribute("aria-disabled", ready && !tooLong ? "false" : "true");
+    if (!ready) status.textContent = "";
+    else if (tooLong) status.textContent = "This report is too long to open in a mail app — use Copy, then paste it into an email to " + SUPPORT + " with the subject above.";
+    else status.textContent = "";
+  }
+
+  send.addEventListener("click", function (event) {
+    if (send.getAttribute("aria-disabled") === "true") {
+      event.preventDefault();
+      status.textContent = what.value.trim() ? status.textContent : "Please describe what went wrong first.";
+    }
+  });
+
+  copy.addEventListener("click", function () {
+    var text = document_();
+    function fallback() {
+      // Clipboard API needs a secure context and permission; a textarea + execCommand does not. A support
+      // page that cannot hand over the report is useless, so there are two ways out.
+      var scratch = document.createElement("textarea");
+      scratch.value = text;
+      scratch.setAttribute("readonly", "readonly");
+      scratch.style.position = "fixed";
+      scratch.style.opacity = "0";
+      document.body.appendChild(scratch);
+      scratch.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (error) { ok = false; }
+      document.body.removeChild(scratch);
+      status.textContent = ok
+        ? "Copied. Paste it into an email to " + SUPPORT + "."
+        : "Could not copy automatically — select the text above and copy it by hand.";
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        status.textContent = "Copied. Paste it into an email to " + SUPPORT + ", subject: " + subject();
+      }, fallback);
+    } else {
+      fallback();
+    }
+  });
+
+  form.addEventListener("input", render);
+  form.addEventListener("change", render);
+  platform.value = guessPlatform();
+  render();
+})();
+</script>
