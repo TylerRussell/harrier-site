@@ -21,6 +21,7 @@ await page.goto(target, { waitUntil: 'load' });
 await page.waitForTimeout(800); // let entrance animations settle
 
 let failures = 0;
+let skipped = 0;
 const buttons = await page.locator('a.btn').all();
 console.log(`checking ${buttons.length} button(s)…`);
 for (const button of buttons) {
@@ -53,9 +54,34 @@ for (const button of buttons) {
     if (same(box, next)) { box = next; break; }
     box = next;
   }
-  if (!box) continue;
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  await page.waitForTimeout(500); // let the 350ms hover transition SETTLE — we assert stability, not entry
+  // A button with no box is not "fine" — it is uncovered. Silently skipping it made this script report
+  // "checking 4 button(s)" and then judge 3, which is the kind of quiet shortfall that reads as coverage.
+  if (!box) {
+    console.log(`  ? "${label}" — SKIPPED: no bounding box (not rendered at this viewport)`);
+    skipped++;
+    continue;
+  }
+
+  // AIMING IS A PRECONDITION, NOT THE ASSERTION. This test exists to catch a button that jitters out from
+  // under the cursor. On a slow runner the hero entrance can still be moving the element after its box was
+  // read, so the pointer lands where the button WAS — and the result was reported as "hovered 0/8", which
+  // is indistinguishable from the jitter bug it is supposed to detect. (That is exactly what the first CI
+  // run produced, on a button that passes locally every time.) So: aim, confirm the hover took, and re-aim
+  // from a fresh box if it did not. Only a hover that cannot be established after several honest attempts
+  // is reported — and it is reported as its own distinct failure, not as jitter.
+  let aimed = false;
+  for (let attempt = 0; attempt < 5 && !aimed; attempt++) {
+    box = (await button.boundingBox()) || box;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.waitForTimeout(500); // let the 350ms hover transition SETTLE — we assert stability, not entry
+    aimed = await button.evaluate((el) => el.matches(':hover'));
+  }
+  if (!aimed) {
+    console.log(`  ✗ "${label}" — could not place the pointer over it (element kept moving, or is covered)`);
+    failures++;
+    await page.mouse.move(0, 0);
+    continue;
+  }
   const samples = [];
   for (let i = 0; i < 8; i++) {
     await page.waitForTimeout(100);
@@ -75,5 +101,6 @@ for (const button of buttons) {
 }
 if (consoleErrors.length) { console.log('console errors:', consoleErrors); failures++; }
 await browser.close();
+if (skipped) console.log(`${skipped} button(s) skipped — see above`);
 console.log(failures ? `FAIL (${failures})` : 'PASS — no hover jitter, no console errors');
 process.exit(failures ? 1 : 0);
