@@ -114,16 +114,30 @@ jobs:
           npm i --silent playwright
           npx playwright install --with-deps chromium
 
-      # GitHub Pages publishes asynchronously; checking immediately after a push tests the OLD site.
-      - name: Wait for the deployment to land
+      # GitHub Pages publishes asynchronously, so checking straight after a push tests the OLD site — and
+      # then fails on something the very commit under test already fixed. A spurious red is worse than no
+      # check at all here, because it trains the failure mail to be ignored.
+      #
+      # "Did it answer?" is not the question — the old site answers perfectly well. The question is whether
+      # THIS COMMIT is being served, so this waits for the pages-build-deployment run for this exact SHA to
+      # finish, and only falls back to a fixed wait if that cannot be determined.
+      - name: Wait for THIS commit to be served
         if: ${{ github.event_name == 'push' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
-          for attempt in $(seq 1 20); do
-            if curl -sf --max-time 10 https://getharrier.com/ >/dev/null; then sleep 20; exit 0; fi
+          set -uo pipefail
+          for attempt in $(seq 1 40); do
+            state=$(gh run list --workflow=pages-build-deployment --limit 20 \
+              --json headSha,status,conclusion \
+              --jq "[.[] | select(.headSha==\"$GITHUB_SHA\")] | .[0] | \"\(.status):\(.conclusion)\"" 2>/dev/null || echo "")
+            case "$state" in
+              completed:success) echo "pages deployment for $GITHUB_SHA is live"; sleep 10; exit 0 ;;
+              completed:*) echo "::warning::pages deployment for $GITHUB_SHA ended $state — checking what is served"; exit 0 ;;
+            esac
             sleep 15
           done
-          echo "::warning::getharrier.com did not answer; checking whatever is currently served"
+          echo "::warning::could not confirm the deployment for $GITHUB_SHA within 10 minutes; checking what is served"
 
       - name: Verify (live)
         env:
