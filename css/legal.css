@@ -70,6 +70,15 @@
   color: var(--fg);
   font-weight: 650;
 }
+.legal code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  color: var(--fg-2);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
 .legal a {
   color: var(--accent);
   text-decoration: none;

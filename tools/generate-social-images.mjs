@@ -13,8 +13,12 @@
 //   node tools/generate-social-images.mjs           # regenerate both
 //   node tools/generate-social-images.mjs --check   # CI-style: fail if the page has moved on
 //
-// Needs Playwright. This repo has no node_modules of its own, so borrow the app repo's:
-//   NODE_PATH=../job-applier-agent/node_modules node tools/generate-social-images.mjs
+// Needs Playwright. This repo has no node_modules of its own, so point NODE_PATH at an install that has
+// it (PLAYWRIGHT_DIR does the same job for the resolver below):
+//   NODE_PATH=/path/to/some/node_modules node tools/generate-social-images.mjs
+//
+// The private application repo's name is deliberately NOT written here. This file is published; a comment
+// naming a private repository is a small, permanent disclosure of something nobody outside needs to know.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';

@@ -92,6 +92,8 @@
 .tcard .ico { width: 26px; height: 26px; color: var(--accent); margin-bottom: 14px; }
 .tcard h4 { font-size: 16.5px; font-weight: 620; margin-bottom: 7px; letter-spacing: -0.01em; }
 .tcard p { color: var(--fg-3); font-size: 14.5px; }
+.tcard p a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(255, 140, 66, 0.3); }
+.tcard p a:hover { border-bottom-color: var(--accent); }
 
 /* ── FAQ (native <details> — works with zero JS) ───────────────── */
 .faq { display: grid; gap: 12px; max-width: 780px; }

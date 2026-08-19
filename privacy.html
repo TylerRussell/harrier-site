@@ -26,24 +26,26 @@
 <main class="legal">
   <a class="back" href="index.html">← Harrier</a>
   <h1>Privacy Policy</h1>
-  <p class="updated">Last updated July 21, 2026</p>
+  <p class="updated">Last updated August 18, 2026</p>
 
-  <div class="tldr">The short version: Harrier runs on your own computer. Your résumé, your profile, your job searches, the jobs you apply to, and your API keys stay on your machine — we never receive them. The only information we get is what's needed to sell you a license and email it to you. Our website uses no cookies, analytics, or trackers.</div>
+  <div class="tldr">The short version: Harrier runs on your own computer. Your résumé, your profile, your job searches, the jobs you apply to, and your API keys stay on your machine. Beyond what's needed to sell you a license and email it to you, we receive something only when you decide we should: a bug report you send us from inside Harrier, or — in beta builds run from the source repository — the diagnostics program, which is off until you turn it on. Both are spelled out in Section 2. Our website uses no cookies, analytics, or trackers.</div>
 
   <p>This Privacy Policy explains what information Harrier ("we," "us," or "our"), operated by Tyler Russell, a sole proprietor located in Minnesota, USA, collects and how we use it. By using Harrier or our website, you agree to this policy.</p>
 
   <h2><span class="idx">1.</span> Our Approach: Local-First by Design</h2>
-  <p>Harrier is software that runs locally on your computer. The application does its work on your machine and sends your application materials directly to the employers and platforms you choose, and (when you enable AI features) to Anthropic using your own API key. Because of this design, the personal data you put into Harrier does not pass through, and is not stored on, any server operated by us.</p>
+  <p>Harrier is software that runs locally on your computer. The application does its work on your machine and sends your application materials directly to the employers and platforms you choose, and (when you enable AI features) to Anthropic using your own API key. Because of this design, the personal data you put into Harrier does not pass through, and is not stored on, any server operated by us. There is no account to create, nothing to upload, and no step at which Harrier needs our permission to run. The two exceptions are the ones you start yourself — a bug report, and the beta diagnostics program — and they are described in Section 2.</p>
 
   <h2><span class="idx">2.</span> Information We Collect</h2>
   <p>We collect a deliberately small amount of information:</p>
   <ul>
     <li><strong>When you purchase a license:</strong> your name and email address, provided to us by our payment processor (Stripe) at checkout, along with a record of your purchase (what you bought and when). <strong>We never receive or store your full payment card number</strong> — Stripe handles payment details.</li>
     <li><strong>When we deliver your license and provide support:</strong> your email address (to send you your license key) and the contents of any support messages you send us.</li>
+    <li><strong>When you send us a bug report.</strong> Harrier can assemble a diagnostic report for you: its own version and how it was installed, your Node and npm versions, your operating system and how much memory the machine has, the results of its built-in preflight checks, which of its settings are switched on (by name — never by value), the last few hundred lines of its own log files, whatever you type into the description box, and a reply address if you choose to give one. <strong>It is only ever sent because you asked for it.</strong> Harrier shows you the exact report first, and it goes out as an ordinary email from the inbox you connected — if you have not connected one, the report is simply saved on your computer and nothing is sent. Before the report is even written to disk, it is scrubbed: API keys, passwords and tokens, your résumé and profile details, your home folder, and any email address or phone number other than the reply address you typed are replaced with placeholders.</li>
+    <li><strong>If you join the beta diagnostics program.</strong> While Harrier is in beta, an instance installed from the source repository can send technical diagnostics to the developer, so that a bug can be found from data already collected instead of a week of email. <strong>It is off until you turn it on:</strong> Harrier asks once, in the dashboard, captures nothing unless you accept, and shows a permanent indicator the whole time it is on. What it sends is deliberately verbose and does include personal data — pipeline and error events, application log lines, dashboard activity, periodic snapshots that include your profile file in full, log-file tails, and screenshots of submissions that failed. Credentials — your API keys, passwords, and OAuth tokens — are stripped before anything is written or sent. Everything is written to your own disk first, and you can stop it at any time (set <code>HARRIER_TELEMETRY=off</code>, or create the file <code>state/TELEMETRY_OFF</code>); we can also switch it off remotely. <strong>The packaged build you buy cannot send diagnostics at all</strong> — it ships without a diagnostics endpoint, and a released build is blocked from sending by a check the test suite enforces.</li>
   </ul>
 
   <h2><span class="idx">3.</span> Information We Do NOT Collect</h2>
-  <p>We want to be explicit about this. We do <strong>not</strong> receive, store, or have access to:</p>
+  <p>We want to be explicit about this. Outside the two cases you start yourself in Section 2 — a bug report you send, and the beta diagnostics program you switch on — we do <strong>not</strong> receive, store, or have access to:</p>
   <ul>
     <li>Your résumé, cover letters, or profile information;</li>
     <li>The jobs you search for, view, or apply to;</li>
@@ -51,7 +53,7 @@
     <li>Your Anthropic API key or your AI usage; or</li>
     <li>Any files on your computer.</li>
   </ul>
-  <p>All of the above stays on your machine and is transmitted only to the third parties <strong>you</strong> direct Harrier to interact with (employers, job platforms, and Anthropic).</p>
+  <p>All of the above stays on your machine and is transmitted only to the third parties <strong>you</strong> direct Harrier to interact with (employers, job platforms, and Anthropic) — and, in the two cases in Section 2, to us.</p>
 
   <h2><span class="idx">4.</span> Our Website</h2>
   <p>Our marketing website uses <strong>no cookies, no analytics, no advertising trackers, and no third-party scripts.</strong> We do not build a profile of your visit.</p>
