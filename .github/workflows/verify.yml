@@ -1,0 +1,131 @@
+name: Verify the site
+
+# TWO GATES, because one is not enough for this site.
+#
+# The LOCAL gate serves the repo from disk and checks what we publish. The LIVE gate checks what a visitor
+# actually receives — which is not the same thing, because Cloudflare sits in front of the site and
+# rewrites the HTML at the edge. On 2026-08-19 that difference cost us every contact link on every page:
+# Cloudflare's Email Obfuscation rewrote each `mailto:` into a `/cdn-cgi/l/email-protection` stub whose
+# decoder our own CSP blocks, so the primary call to action on the homepage silently went nowhere. Nothing
+# in the repo had changed. A local check could not have seen it, and did not.
+#
+# Hence the schedule: the live gate runs daily even when nobody pushes, because the thing that breaks this
+# site is a setting changing in a dashboard, not a commit.
+#
+# This repository is PUBLIC, so Actions minutes are free — the cost argument that keeps the application
+# repo's CI switched off does not apply here.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 13:00 UTC = 08:00 America/Chicago under CDT — a failure lands in the inbox with the morning, not
+    # overnight where it sits unread until the afternoon.
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: verify-site
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # ── Source checks: no browser, no network, seconds. ───────────────────────────────────────────────────
+  source:
+    name: Source (CSP pins, PII)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # A stale pin makes the browser refuse to run the inline script. The page still renders, so it
+      # presents as "the buttons do nothing" rather than as anything security-shaped.
+      - name: CSP hashes are current
+        run: |
+          set -euo pipefail
+          for file in index.html report.html; do node tools/csp-hash.mjs "$file" --check; done
+
+      # The public-site PII gate. The operator name in the Terms and Privacy Policy is the named
+      # contracting party and is deliberately excluded; everything else on this list is a leak.
+      - name: No PII or private-repo references
+        run: |
+          set -euo pipefail
+          hits=$(grep -rInE '315.?727.?8764|Diamond Lake|55419|sk_(test|live)_|whsec_|BEGIN.*PRIVATE KEY|Minneapolis|Sonali|/Users/|job-applier-agent|pipeline\.db' . \
+            --exclude-dir=.git --exclude-dir=.preview --exclude-dir=node_modules || true)
+          if [ -n "$hits" ]; then echo "::error::PII / private-repo reference found"; echo "$hits"; exit 1; fi
+          echo "clean"
+
+  # ── The local gate: what we publish, before it goes anywhere. ─────────────────────────────────────────
+  local:
+    name: Local (pre-deploy)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Playwright is deliberately NOT a dependency of this static site. Install it beside the repo and
+      # point the runner at it — the same PLAYWRIGHT_RESOLVE_FROM convention the scripts already use.
+      - name: Install Playwright
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pw && cd /tmp/pw
+          npm init -y >/dev/null
+          npm i --silent playwright
+          npx playwright install --with-deps chromium
+
+      - name: Verify (local)
+        env:
+          PLAYWRIGHT_RESOLVE_FROM: /tmp/pw/package.json
+        run: node verify/run.mjs
+
+      - name: Hover stability
+        env:
+          PLAYWRIGHT_RESOLVE_FROM: /tmp/pw/package.json
+        run: node verify/hover-stability.mjs
+
+  # ── The live gate: what a visitor actually gets, edge and all. ────────────────────────────────────────
+  live:
+    name: Live (getharrier.com)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # On a push it runs AFTER the local gate and waits for Pages to serve the new commit. On a schedule it
+    # runs on its own — that is the case that catches a dashboard setting changing under us.
+    needs: [local]
+    if: ${{ always() && (github.event_name != 'push' || needs.local.result == 'success') }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Playwright
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pw && cd /tmp/pw
+          npm init -y >/dev/null
+          npm i --silent playwright
+          npx playwright install --with-deps chromium
+
+      # GitHub Pages publishes asynchronously; checking immediately after a push tests the OLD site.
+      - name: Wait for the deployment to land
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            if curl -sf --max-time 10 https://getharrier.com/ >/dev/null; then sleep 20; exit 0; fi
+            sleep 15
+          done
+          echo "::warning::getharrier.com did not answer; checking whatever is currently served"
+
+      - name: Verify (live)
+        env:
+          PLAYWRIGHT_RESOLVE_FROM: /tmp/pw/package.json
+        run: node verify/run.mjs --live

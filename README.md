@@ -101,3 +101,26 @@ edit those source HTML files and re-screenshot at 1200×630 / 64×64.
 
 The numbers on the page are **real, all-time, aggregate figures for Harrier's first user**, and are
 **rounded down** so they never overstate. No personal or employer data appears anywhere on the site.
+
+## Verifying the site
+
+Two gates, and they are not interchangeable.
+
+```sh
+export PLAYWRIGHT_RESOLVE_FROM=/path/to/a/package.json   # any install that has playwright
+node verify/run.mjs            # LOCAL  — serves the repo from disk; run before you push
+node verify/run.mjs --live     # LIVE   — checks getharrier.com as a visitor receives it
+```
+
+The local gate checks what we publish. The live gate checks what Cloudflare hands over, which is a
+different thing: it sits in front of the site and rewrites the HTML at the edge. On 2026-08-19 that
+difference cost every contact link on every page — Email Obfuscation rewrote each `mailto:` into a
+`/cdn-cgi/l/email-protection` stub whose decoder our own CSP blocks, so the homepage's main call to
+action silently went nowhere while nothing in this repo had changed.
+
+Both run automatically (`.github/workflows/verify.yml`): on every push, and the live gate again daily —
+because the thing that breaks this site is a setting changing in a dashboard, not a commit.
+
+`sh tools/check-edge-injection.sh` answers "is Cloudflare injecting anything right now" on its own. Note
+that a plain `curl` will tell you it is not: the injection only happens when the request looks like a
+browser, which is why that script sends a browser User-Agent.
