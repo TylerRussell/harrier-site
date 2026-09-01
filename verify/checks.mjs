@@ -86,6 +86,16 @@ export function offOriginRequests(recorded, baseUrl) {
     .map((url) => `off-origin request: ${url.slice(0, 90)}`);
 }
 
+/** Does this batch of recorded errors look like a TRANSIENT edge failure worth one retry?
+ *
+ *  Deliberately narrow: only a subresource that failed to load with a 5xx status. A 4xx is a real
+ *  missing file and must never be retried away, a JS exception is the page's own fault, and a
+ *  persistent 5xx still fails because the caller only forgives it when the RELOAD comes back clean.
+ *  This decides whether to look twice — never whether to pass. */
+export function hasTransientServerError(recorded) {
+  return recorded.some((text) => /Failed to load resource.*status of 5\d\d/.test(String(text)));
+}
+
 /** Errors the PAGE caused. CSP blocks of injected CDN scripts are reported by noEdgeInjection instead —
  *  counting them here would blame the page for something the edge did to it. */
 export function pageErrors(recorded) {

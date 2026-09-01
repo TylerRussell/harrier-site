@@ -63,16 +63,37 @@ console.log(`${live ? 'LIVE' : 'LOCAL'} verification of ${base}\n`);
 
 for (const route of PAGES) {
   for (const width of VIEWPORTS) {
-    const context = await browser.newContext({ viewport: { width, height: 900 } });
-    const page = await context.newPage();
-    const errors = [];
-    const requests = [];
-    const completed = []; // responses that actually arrived — the difference between "asked" and "got"
-    page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
-    page.on('pageerror', (e) => errors.push(String(e)));
-    page.on('request', (r) => requests.push(r.url()));
-    page.on('response', (r) => completed.push(r.url()));
-    await page.goto(base + route, { waitUntil: 'networkidle' });
+    // LOAD THE PAGE, RETRYING ONCE ON A TRANSIENT EDGE 5xx. A CDN in front of a static host
+    // occasionally answers one subresource with a 503 that is gone milliseconds later. On
+    // 2026-09-01 that failed the scheduled run — and emailed — while the site was serving 200 to
+    // every one of 40 hand-checked requests. The tell was that the SAME page failed at one
+    // viewport and passed at the other, which no real page defect can do.
+    //
+    // Retrying rather than filtering keeps the check honest: a genuinely broken resource 5xxs on
+    // the reload too and still fails the run. Only a blip that cannot reproduce is forgiven, and
+    // it is recorded as a WARNING so the flake stays visible rather than silently disappearing.
+    let context;
+    let page;
+    let errors;
+    let requests;
+    let completed;
+    let transientNote = null;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      context = await browser.newContext({ viewport: { width, height: 900 } });
+      page = await context.newPage();
+      errors = [];
+      requests = [];
+      completed = []; // responses that actually arrived — the difference between "asked" and "got"
+      page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+      page.on('pageerror', (e) => errors.push(String(e)));
+      page.on('request', (r) => requests.push(r.url()));
+      page.on('response', (r) => completed.push(r.url()));
+      await page.goto(base + route, { waitUntil: 'networkidle' });
+      if (attempt === 2 || !checks.hasTransientServerError(errors)) break;
+      transientNote = `a transient 5xx appeared on the first load and was retried`;
+      await context.close();
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
 
     const where = `${route} @${width}`;
     record(`${where} contact links`, await checks.contactLinksWork(page));
@@ -80,7 +101,7 @@ for (const route of PAGES) {
     const edge = await checks.edgeInjection(page, completed);
     record(`${where} no edge injection`, edge.failures, edge.warnings);
     record(`${where} no off-origin requests`, checks.offOriginRequests(requests, base));
-    record(`${where} no page errors`, checks.pageErrors(errors));
+    record(`${where} no page errors`, checks.pageErrors(errors), transientNote ? [transientNote] : []);
     record(`${where} no horizontal scroll`, await checks.noHorizontalScroll(page));
     if (width === 1440) record(`${where} internal links resolve`, await checks.internalLinksResolve(page, base));
     if (route === '/report.html' && width === 1440) {

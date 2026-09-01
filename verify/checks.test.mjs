@@ -5,7 +5,7 @@
 //   node --test verify/checks.test.mjs        (no browser needed — these are the pure paths)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { edgeInjection, offOriginRequests, pageErrors } from './checks.mjs';
+import { edgeInjection, hasTransientServerError, offOriginRequests, pageErrors } from './checks.mjs';
 
 const BEACON = 'https://static.cloudflareinsights.com/beacon.min.js/v451322';
 const stubPage = (scripts) => ({ evaluate: async () => scripts });
@@ -54,4 +54,35 @@ test('page errors exclude CSP blocks of injected scripts, and keep everything el
   const failures = pageErrors(errors);
   assert.equal(failures.length, 1, 'exactly the real error should survive');
   assert.match(failures[0], /TypeError/);
+});
+
+// The 2026-09-01 flake: one subresource 503 failed the scheduled run (and emailed) while the site
+// served 200 to all 40 hand-checked requests. run.mjs retries once on this signal; these pin the
+// signal narrow enough that it can never forgive a real failure.
+test('a transient 5xx on a subresource is retryable', () => {
+  assert.equal(
+    hasTransientServerError(['Failed to load resource: the server responded with a status of 503 ()']),
+    true,
+  );
+  assert.equal(
+    hasTransientServerError(['Failed to load resource: the server responded with a status of 500 ()']),
+    true,
+  );
+});
+
+test('a 4xx is NOT retryable — that is a genuinely missing file', () => {
+  assert.equal(
+    hasTransientServerError(['Failed to load resource: the server responded with a status of 404 ()']),
+    false,
+  );
+});
+
+test("a page's own JS error is NOT retryable", () => {
+  assert.equal(hasTransientServerError(['Uncaught TypeError: x is not a function']), false);
+  assert.equal(hasTransientServerError([]), false);
+});
+
+test('pageErrors still REPORTS a 5xx — retrying is run.mjs\'s job, not a filter here', () => {
+  const out = pageErrors(['Failed to load resource: the server responded with a status of 503 ()']);
+  assert.equal(out.length, 1, 'a persistent 503 must still fail the run');
 });
