@@ -48,6 +48,19 @@ mode is a missing button, never a dead one.
 `DEFAULT_FREE_SUBMIT_CAP` and the Stripe price in the product repo, and the wording in
 `terms.html`. Change one, change all three.
 
+## Cache busting (run this when you change a stylesheet)
+
+Cloudflare caches CSS for four hours; the HTML revalidates much sooner. So a push that changes a
+stylesheet ships new markup against the **old** stylesheet — live, subtly wrong, and nothing fails.
+
+```bash
+node tools/css-version.mjs           # stamp every <link rel=stylesheet> with ?v=<content hash>
+node tools/css-version.mjs --check   # exit 1 if any stamp is stale
+```
+
+Same idea as `tools/csp-hash.mjs`: the token comes from the file's own bytes, so a changed
+stylesheet gets a URL no cache can already hold. Run it before pushing any CSS edit.
+
 ## Security posture
 
 This is static content, but it's hardened as far as a Pages-hosted page allows:
