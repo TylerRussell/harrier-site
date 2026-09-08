@@ -226,3 +226,7 @@ details.q .a a { color: var(--accent); text-decoration: none; border-bottom: 1px
   .copy { border-left: 0; border-top: 1px solid var(--border); padding: 12px 18px; }
   .install-cmd { font-size: 13px; }
 }
+
+/* Footer legal links. The same rule lives in legal.css for terms/privacy/report; index.html loads
+   only base + sections, so without this copy the three links render as "TermsPrivacyReport a problem". */
+.foot .legal-links { display: flex; gap: 18px; }
