@@ -96,7 +96,7 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
   <div class="stats">${stats
     .map((s) => `<div class="stat"><b>${s.value}</b><span>${s.label}</span></div>`)
     .join('')}</div>
-  <div class="foot"><span class="pill">Private beta</span><span>${domain}</span></div>
+  <div class="foot"><span class="pill">In beta</span><span>${domain}</span></div>
 </body></html>`;
 
 // The favicon is the mark alone on the site's own near-black tile — no text survives 64px.

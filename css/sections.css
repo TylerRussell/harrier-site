@@ -185,3 +185,44 @@ details.q .a a { color: var(--accent); text-decoration: none; border-bottom: 1px
   letter-spacing: 0.02em;
   max-width: 70ch;
 }
+
+/* ── Install command ──────────────────────────────────────────── */
+/* The primary conversion control: the thing a visitor copies. Mono, boxed, and wide
+   enough that the command never wraps at any viewport we support. */
+.install {
+  display: flex; align-items: stretch; gap: 0;
+  margin-bottom: 26px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--glass-2);
+  overflow: hidden;
+  max-width: 100%;
+}
+.install-cmd {
+  font-family: var(--mono); font-size: 14px; letter-spacing: 0.01em;
+  color: var(--highlight);
+  padding: 14px 18px;
+  white-space: nowrap; overflow-x: auto;
+  display: flex; align-items: center;
+}
+.install-cmd::before { content: "$"; color: var(--fg-4); margin-right: 10px; }
+.copy {
+  font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-2); cursor: pointer;
+  padding: 0 18px;
+  border: 0; border-left: 1px solid var(--border);
+  background: var(--panel);
+  transition: background 0.25s var(--ease), color 0.25s var(--ease);
+  flex: 0 0 auto;
+}
+.copy:hover { background: var(--panel-2); color: var(--fg); }
+.copy.copied { color: var(--accent); }
+
+.cta-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+@media (max-width: 480px) {
+  .install { flex-direction: column; }
+  .copy { border-left: 0; border-top: 1px solid var(--border); padding: 12px 18px; }
+  .install-cmd { font-size: 13px; }
+}

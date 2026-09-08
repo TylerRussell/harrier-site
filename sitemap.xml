@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Only the marketing page is offered for indexing. terms.html, privacy.html and report.html
+     stay noindex: they carry the contact address and have no search value. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://getharrier.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+</urlset>

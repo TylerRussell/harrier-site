@@ -1,7 +1,8 @@
 # Harrier — landing site
 
 The public landing page for **Harrier**, an AI agent that finds jobs, tailors a résumé
-for each one, and applies for you — all from your own machine. Currently in **private beta**.
+for each one, and applies for you — all from your own machine. Currently in **beta**: the first
+three applications are free, then a $49 license good for one year.
 
 Live: <https://getharrier.com/>
 
@@ -29,20 +30,23 @@ git add -A && git commit -m "..." && git push
 
 That's the entire pipeline. There is nothing to run, no server, no CI.
 
-## The monetize toggle (beta → paid)
+## The Buy button
 
-The site ships in **beta mode**: the call-to-action is a mailto "Request beta access", and the
-paid **Buy** button is present in the markup but **commented out**.
-
-When the monetize flag flips, uncomment the Buy button and point it at the live Stripe Payment
-Link. It lives in `index.html`, in the final CTA section, on the line marked:
+The CTA leads with the free tier — `npm install -g harrier-ai`, three applications free — and
+offers a licence as the secondary control. That Buy button is in the markup and **activates itself
+the moment its `href` is a real Payment Link**:
 
 ```html
-<!-- MONETIZE: uncomment when the flag flips (private beta → paid). ... -->
-<!-- <a class="btn magnetic" href="#" data-payment-link>Buy Harrier ...</a> -->
+<a class="btn" href="#" data-payment-link>Buy a license — $49 …</a>
 ```
 
-Swap the `href="#"` placeholder for the Payment Link and remove (or keep) the beta CTA above it.
+Swap `href="#"` for the live `https://buy.stripe.com/…` link and it appears. Until then the inline
+script removes it on load, so the site cannot ship a Buy control that goes nowhere — the failure
+mode is a missing button, never a dead one.
+
+**The advertised numbers are promises.** "Three free applications" and "$49 / one year" must match
+`DEFAULT_FREE_SUBMIT_CAP` and the Stripe price in the product repo, and the wording in
+`terms.html`. Change one, change all three.
 
 ## Security posture
 
@@ -87,9 +91,10 @@ Three tiers:
    AI Scrapers/Crawlers" + bot-fight can actually *challenge/block* non-compliant bots, which
    robots.txt (advisory only) cannot.
 
-**Launch toggle:** the whole site is `noindex` for private beta. At public launch, remove `noindex`
-from `index.html` if you want the marketing page found via search — but keep it on `terms.html` /
-`privacy.html` if you'd rather your operator name not be indexed.
+**Indexing:** `index.html` is open to search engines. `terms.html`, `privacy.html` and
+`report.html` stay `noindex` — they carry the contact address and have no search value — and
+`robots.txt` disallows them a second time. The named AI-training crawlers stay blocked
+everywhere, and every page keeps `noai, noimageai`.
 
 ## Regenerating the OG image / favicon
 

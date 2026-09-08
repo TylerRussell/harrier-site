@@ -249,3 +249,14 @@ body.lit h1.headline .w:nth-child(5) { transition-delay: 0.44s; }
   .badge .dot { animation: none; }
   .rise, h1.headline .w { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
+
+/* Free-tier promise — the hero's load-bearing claim, so it sits above the fineprint
+   and reads at body weight rather than as a footnote. */
+.freeline {
+  margin-top: 20px;
+  max-width: 52ch;
+  color: var(--fg-2);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+.freeline b { color: var(--fg); font-weight: 650; }

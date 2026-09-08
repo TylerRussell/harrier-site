@@ -1,17 +1,22 @@
-# Harrier — discourage all crawling, indexing, and AI training.
+# Harrier — open to search engines, closed to AI training crawlers.
 #
-# NOTE ON EFFECTIVENESS: robots.txt is honored at a domain's ROOT. The site is now
-# served at the root of its custom domain (getharrier.com), so this file is fetched as
-# getharrier.com/robots.txt and IS authoritative for compliant crawlers. The per-page
-# <meta name="robots" content="noindex, nofollow, noai, noimageai"> tags remain as a
-# second, independent layer of defense.
+# NOTE ON EFFECTIVENESS: robots.txt is honored at a domain's ROOT. The site is served at the
+# root of its custom domain (getharrier.com), so this file is fetched as getharrier.com/robots.txt
+# and IS authoritative for compliant crawlers. The per-page
+# <meta name="robots" content="noai, noimageai"> tags remain as a second, independent layer.
 #
-# None of this stops a determined scraper fetching a public URL — it stops well-behaved
-# crawlers (search engines + compliant AI bots) from indexing or training on the site.
+# None of this stops a determined scraper fetching a public URL — it stops well-behaved crawlers
+# from training on the site, while letting search engines index it.
 
-# Everything, everyone: stay out.
+# Search engines and everyone not named below: welcome.
 User-agent: *
-Disallow: /
+Allow: /
+
+# Only the marketing page is offered for indexing — the rest carry the contact address
+# and have no search value.
+Disallow: /report.html
+Disallow: /terms.html
+Disallow: /privacy.html
 
 # Named AI training / answer-engine crawlers (explicit, in case a bot only matches its own name)
 User-agent: GPTBot
@@ -55,4 +60,4 @@ Disallow: /
 User-agent: Omgilibot
 Disallow: /
 
-# No sitemap is published (a sitemap would help crawlers find pages).
+Sitemap: https://getharrier.com/sitemap.xml
