@@ -139,6 +139,13 @@ action silently went nowhere while nothing in this repo had changed.
 Both run automatically (`.github/workflows/verify.yml`): on every push, and the live gate again daily —
 because the thing that breaks this site is a setting changing in a dashboard, not a commit.
 
+**Cloudflare's SSL/TLS mode must stay "Full", not "Full (strict)".** GitHub Pages' certificate for
+`getharrier.com` cannot renew reliably from behind the Cloudflare proxy. On 2026-10-20 it expired
+(GitHub reported the renewal as `bad_authz`), strict mode refused the expired origin certificate, and
+every visitor got a Cloudflare 526 for a week. "Full" still encrypts Cloudflare→GitHub; it just does not
+require the origin certificate to be valid. If the live gate starts failing with 526, check that setting
+first, and `gh api repos/TylerRussell/harrier-site/pages --jq .https_certificate` for the origin cert.
+
 `sh tools/check-edge-injection.sh` answers "is Cloudflare injecting anything right now" on its own. Note
 that a plain `curl` will tell you it is not: the injection only happens when the request looks like a
 browser, which is why that script sends a browser User-Agent.
